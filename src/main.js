@@ -1,9 +1,8 @@
-import Vue from "vue";
-import Buefy from "buefy";
+import Vue from 'vue'
+import App from './App.vue'
 
-Vue.use(Buefy);
-import App from "./components/App/App";
+Vue.config.productionTip = false
 
-const app = new Vue(App).$mount("#VueApp");
-
-app.text = "Ez Calculator";
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
