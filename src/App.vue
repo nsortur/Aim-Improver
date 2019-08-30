@@ -31,7 +31,8 @@ export default {
     return {
       firstVal: 0,
       secondVal: 0,
-      result: 0
+      result: 0,
+      resulted: false
     };
   },
   methods: {
@@ -51,8 +52,20 @@ export default {
       var a = eval(document.getElementById("resultBox").innerHTML);
       console.log(a);
       document.getElementById("resultBox").innerHTML = a;
+
+      this.resulted = true;
     },
     display(event) {
+      if (
+        document.getElementById("resultBox").innerHTML != "" &&
+        this.resulted
+      ) {
+        if (Number.isInteger(event)) {
+          document.getElementById("resultBox").innerHTML = "";
+          
+        }
+        this.resulted = false;
+      }
       document.getElementById("resultBox").innerHTML += event;
     },
     clear() {
