@@ -12,14 +12,14 @@
       <button type="button" class="buttons" id="eight" @click="display(8)">8</button>
       <button type="button" class="buttons" id="nine" @click="display(9)">9</button>
       <button type="button" class="buttons" id="zero" @click="display(0)">0</button>
-      <button type="button" class="buttons" id="equals">=</button>
+      <button type="button" class="buttons" id="equals" @click="calculate()">=</button>
     </div>
     <div>
-      <button type="button" class="buttons" id="divide" @click="calculate('divide')">/</button>
-      <button type="button" class="buttons" id="mult" @click="calculate('multiply')">X</button>
-      <button type="button" class="buttons" id="minus" @click="calculate('subtract')">-</button>
-      <button type="button" class="buttons" id="plus" @click="calculate('add')">+</button>
-      <button type="button" class="buttons" id="clear" @click="display('')">CLEAR</button>
+      <button type="button" class="buttons" id="divide" @click="display(' / ')">/</button>
+      <button type="button" class="buttons" id="mult" @click="display(' * ')">×</button>
+      <button type="button" class="buttons" id="minus" @click="display(' - ')">-</button>
+      <button type="button" class="buttons" id="plus" @click="display(' + ')">+</button>
+      <button type="button" class="buttons" id="clear" @click="clear()">CLEAR</button>
     </div>
   </div>
 </template>
@@ -35,21 +35,28 @@ export default {
     };
   },
   methods: {
-    calculate(event) {
-      if (event == "divide") {
-        this.result = this.firstVal / this.secondVal;
-      } else if (event == "multiply") {
-        this.result = this.firstVal * this.econdVal;
-      } else if (event == "add") {
-        this.result = this.firstVal + this.secondVal;
-      } else if (event == "subtract") {
-        this.result = this.firstVal - this.secondVal;
-      } else {
-        console.log("wat");
-      }
+    calculate() {
+      //   if (event == "divide") {
+      //     this.result = this.firstVal / this.secondVal;
+      //   } else if (event == "multiply") {
+      //     this.result = this.firstVal * this.econdVal;
+      //   } else if (event == "add") {
+      //     this.result = this.firstVal + this.secondVal;
+      //   } else if (event == "subtract") {
+      //     this.result = this.firstVal - this.secondVal;
+      //   } else {
+      //     console.log("wat");
+      //   }
+
+      var a = eval(document.getElementById("resultBox").innerHTML);
+      console.log(a);
+      document.getElementById("resultBox").innerHTML = a;
     },
     display(event) {
-      (document.getElementById("resultBox").innerHTML = event);
+      document.getElementById("resultBox").innerHTML += event;
+    },
+    clear() {
+      document.getElementById("resultBox").innerHTML = "";
     }
   }
 };
