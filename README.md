@@ -1,4 +1,6 @@
-# Project setup
+# [View current build](https://stoic-euler-647ca7.netlify.com/)
+
+## Project setup
 ```
 npm install
 ```
