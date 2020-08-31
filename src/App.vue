@@ -2,6 +2,7 @@
   <div id="app">
     <BoxGame :style="{ fontFamily: font }"/>
     <RoundLog/>
+    <p style="position:absolute; bottom:25px; left: 25px;">Created by Neel Sortur, 2020</p>
   </div>
 </template>
 
