@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <BoxGame :style="{ fontFamily: font }"/>
+    <h1 id="title">improve your aim!</h1>
+    <BoxGame/>
     <RoundLog/>
-    <p style="position:absolute; bottom:25px; left: 25px;">Created by Neel Sortur, 2020</p>
   </div>
 </template>
 
@@ -19,17 +19,50 @@ export default {
   },
   data() {
     return{
-      //Game times, s
-      boxGameTime: 4,
-      font: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
-      
+      instrucShown: false
     }
   }
 };
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
+
 #app {
   background-color: beige;
+  height: 1000px;
+  font-family: 'Nunito', sans-serif;
+}
+#title{
+	text-align: center;
+  position: relative;
+	font-size:50px;
+  top: 30px;
+  animation: fadeIn linear 1.5s;
+}
+#game{
+  width: 75%;
+}
+#rounds{
+  width: 25%;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeInInst{
+  0%{
+    opacity: 0;
+  }
+  75%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
 }
 </style>

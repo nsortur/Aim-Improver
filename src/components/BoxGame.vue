@@ -1,20 +1,23 @@
 <template>
     <div id="wrapper">
-
-        <h1 id="title">Improve your aim!</h1>
-        <button id="newGame" v-on:click="startGame" v-if="startSeen">New game</button>
+        <button class="myButton" id="newGame" v-on:click="startGame" v-if="startSeen">new game</button>
         <div id="board" v-on:click="outsideBoxClicked">
-            <div class="clickable" v-on:click="boxClicked" :style="boxPos"></div>
+            <div id="instructions" v-if="instrucShown">
+                <p style="font-size:35px; font-weight:bold;">instructions:</p>
+                <p>1) adjust time limit, press "new game"</p>
+                <p>2) click the yellow squares</p>
+                <p>3) try to maximize score:time ratio</p>
+                <a href="#" class="myButton" v-on:click="dismissInst">Got it!</a>
+            </div>
+            <div class="clickable" v-on:click="boxClicked" :style="boxPos" v-if="!instrucShown">{{currScore + 1}}</div>
             <div id="timerArea">
                 <p class="bubbled" id="timerValue">{{displayTime}}</p>
                 <p class="bubbled">seconds left</p>
                 <p class="bubbled" id="adjust">Adjust time limit: <span><input v-model.number="newTime" placeholder="New time limit" type="number" min=0 max=100></span></p>
             </div>
             <div id="highScoreArea">
-                <p class="bubbled">High Score</p>
                 <p class="bubbled" id="highScoreValue">{{highScore}}</p>
-                <p class="bubbled" id="highScoreSeconds">at {{highSeconds}} second limit</p>
-                <div id="totalScore">Score: {{currScore}}</div>
+                <p class="bubbled">high score</p>
             </div>
         </div>
         
@@ -27,20 +30,22 @@ export default {
     name: "click-box-game",
     data () {
         return {
-            newTime: 4,
-            gameTime: 4,
+            newTime: 15,
+            gameTime: 15,
             displayTime: 0,
             currScore: 0,
             highScore: 0,
-            startSeen: true,
+            startSeen: false,
             countdown: null,
             //dynamically bound box position
             boxPos: {
-                top: "0px",
-                left: "0px"
+                top: "320px",
+                left: "320px"
             },
-            highSeconds: 4,
-            outsideBoxClickCt: 0
+            highSeconds: 15,
+            outsideBoxClickCt: 0,
+            intId: null,
+            instrucShown: true
         }
     },
     methods: {
@@ -73,14 +78,23 @@ export default {
                 this.boxPos.left = Math.floor(Math.random() * 450) + "px"
             } else {
                 //reminder to press new game (emphasizes button)
-                const intId = setInterval(() => {
-                    this.startSeen = !this.startSeen
-                }, 100)
-                setTimeout(() => clearInterval(intId), 1000)
+                if(!this.timers.blinkNew.isRunning){
+                    this.intId = setInterval(() => {
+                        this.startSeen = !this.startSeen
+                    }, 100)
+                    this.$timer.start('blinkNew')
+                }
+                // setTimeout(() => clearInterval(intId), 1000)
             }
         },
+        outsideBoxClicked(){
+            this.outsideBoxClickCt++
+        },
+        blinkNew(){
+            clearInterval(this.intId)
+            this.$timer.stop('blinkNew')
+        },
         gameOver(){
-            console.log('game over')
             this.$timer.stop('gameOver')
             //update high score
             if (this.currScore > this.highScore){
@@ -96,35 +110,47 @@ export default {
                 misclicks: this.outsideBoxClickCt - this.currScore
             })
         },
-        outsideBoxClicked(){
-            this.outsideBoxClickCt++
+        dismissInst(){
+            this.instrucShown = false
+            this.startSeen = true
+            EventBus.$emit('accepted', this.instrucShown)
         }
     },
     created() {
         //Set display counter to initial time
         this.displayTime = this.gameTime
     },
+    mounted() {
+        
+    },
     timers: {
-        gameOver: {time: 0, autostart: false}
+        gameOver: {time: 0, autostart: false},
+        blinkNew: {time: 1000, autostart: false}
     }
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+
 #adjust{
     position: relative;
     top: 35px;
     font-size: 15px;
-    font-family: 'Times New Roman', Times, serif;
 }
 #board{
+    padding: 10px;
 	position:absolute;
+    z-index: 2;
 	left: 50%;
     margin-left: -250px;
     top: 100px;
     width: 500px;
     height: 500px;
 	background-color: rgb(200,200,200);
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
 }
 .bubbled{
     font-size:30px;
@@ -135,6 +161,9 @@ export default {
 	height:50px;
 	background-color:yellow;
 	position:absolute;
+    z-index: 2;
+    font-size: 35px;
+    text-align: center;
 }
 .clickable:hover{
 	cursor: pointer;
@@ -152,6 +181,7 @@ export default {
     left: 550px;
     border-radius: 50px;
     background-color: rgb(200,200,200);
+    animation: fadeInHigh linear 1s;
 }
 #highScoreValue{
     font-size: 85px;
@@ -159,8 +189,36 @@ export default {
 #highScoreSeconds{
     position: relative;
     font-size: 20px;
-    font-family: 'Times New Roman', Times, serif;
-    bottom: 10px;
+    bottom: 20px;
+}
+#instructions{
+  position: relative;
+  text-align: center;
+  font-size: 20px;
+  animation: fadeInHigh ease 3s;
+}
+.myButton {
+	box-shadow:inset 0px 1px 0px 0px #fff6af;
+	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+	background-color:#ffec64;
+	border-radius:6px;
+	border:1px solid #ffaa22;
+	display:inline-block;
+	cursor:pointer;
+	color:#333333;
+	font-size:15px;
+    font-weight: bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffee66;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+	background-color:#ffab23;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
 }
 #newGame{
 	width:300px;
@@ -174,19 +232,13 @@ export default {
 	z-index:3;
 	text-align:center;
 	border-radius:5px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: 'Nunito', sans-serif;
 }
 #newGame:hover{
 	cursor: pointer;
 	background-color:yellow;
 	border: 2px solid rgb(200,200,200);
 	color:black;
-}
-#title{
-	text-align: center;
-    position: relative;
-	font-size:50px;
-    top: 30px;
 }
 #timerArea{
     position: absolute;
@@ -195,19 +247,44 @@ export default {
     right: 550px;
     border-radius: 50px;
     background-color: rgb(200,200,200);
+    animation: fadeInTimer linear 1s;
 }
 #timerValue{
     font-size: 85px;
 }
-#totalScore{
-	font-size:30px;
-    position: absolute;
-   	top:200px;
-	left:50%; 
-    width: 250px;
-    margin-left: -50px;
-}
 #wrapper{
-    height:620px;
+    height:550px;
+    animation: fadeIn linear 1s;
+    font-family: 'Nunito', sans-serif;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeInTimer{
+    0%{
+        opacity: 0;
+    }
+    33%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@keyframes fadeInHigh{
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
 }
 </style>

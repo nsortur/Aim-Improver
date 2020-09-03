@@ -1,15 +1,14 @@
 <template>
     <div id="wrapper">
-        <p id="instructions">Try to maximize score:time ratio while keeping accuracy high!</p>
         <div id="area">
-            <h1 style="font-size: 30px">Rounds log</h1>
-            <table style="width: 100%">
+            <h1 style="font-size:30px;" v-if="instAccepted">rounds log</h1>
+            <table style="width: 100%" v-if="instAccepted">
                 <tr>
-                    <th>Score:Time (ratio)</th>
-                    <th>Score (clicks)</th>
-                    <th>Elapsed time (s)</th>
-                    <th>Accuracy (%)</th>
-                    <th>Misclicks (clicks)</th>
+                    <th>score:time</th>
+                    <th>score</th>
+                    <th>time</th>
+                    <th>accuracy</th>
+                    <th>misclicks</th>
                 </tr>
                 <tr v-for="round in items" :key="round.score">
                     <td>
@@ -28,6 +27,7 @@
                 </tr>
             </table>
         </div>
+        <p id="watermark">Created by Neel Sortur, 2020</p>
     </div>
 </template>
 
@@ -36,10 +36,12 @@ import {EventBus} from "../eventBus.js"
 export default {
     created() {
         EventBus.$on('gameOver', this.createNewStats)
+        EventBus.$on('accepted', (instrucShown) => this.instAccepted = !instrucShown)
     },
     data() {
         return{
-            items: []
+            items: [],
+            instAccepted: false
         }
     },
     methods: {
@@ -56,6 +58,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
 #area{
     position: relative;
     left: 50%;
@@ -66,21 +70,35 @@ export default {
     background-color: rgb(200,200,200);
     padding: 10px;
     text-align: center;
-    font-size: 20px;
-
+    font-size: 15px;
+    font-family: 'Nunito', sans-serif;
     overflow-y: scroll;
-}
-#instructions{
-    text-align: center;
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: bold;
 }
 table, th, td{
     border-collapse: collapse;
     border-spacing: 0;
     border: 1px solid beige;
+    table-layout: fixed;
+}
+#watermark{
+  position: relative;
+  top: 120px;
+  left: 20px;
 }
 #wrapper{
-    height: 400px;
+    height: 350px;
+    animation: fadeIn linear 1.5s;
+    background-color: beige;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 </style>
