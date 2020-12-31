@@ -4,4 +4,4 @@ Adjust the dial to the desired time limit, then click new game. You will be able
 ## Why?
 This very simple tool can enhance reaction times while keeping accuracy in check.
 
-v0.0
+*Note*: Optimized for Google Chrome
